@@ -1,1 +1,15 @@
+# Python
 .venv/
+__pycache__/
+*.pyc
+*.pyo
+.env
+
+# Portfolio / Next.js
+portfolio/node_modules/
+portfolio/.next/
+portfolio/out/
+
+# OS / Editor
+.DS_Store
+.vscode/
