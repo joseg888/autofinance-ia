@@ -1,47 +1,35 @@
-/* ─────────────────────────────────────────────────────────────────────────────
-   globals.css
-   Sistema de diseño "Panel de Telemetría"
-   Todas las variables CSS del sitio viven aquí.
-───────────────────────────────────────────────────────────────────────────── */
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* ── Variables CSS del sistema de diseño ── */
 :root {
-  /* Paleta principal */
-  --bg:               #0A0E14;
-  --surface:          #121924;
-  --border:           #1E293B;
-  --accent-primary:   #22D3EE;
-  --accent-secondary: #F0A868;
+  --bg:               #06010F;
+  --surface:          #0D0720;
+  --surface-2:        #130E2B;
+  --border:           #2A1A5E;
+  --border-bright:    #5B21B6;
+  --accent-primary:   #A855F7;
+  --accent-violet:    #7C3AED;
+  --accent-fuchsia:   #E879F9;
+  --accent-blue:      #818CF8;
+  --text-primary:     #F0EEFF;
+  --text-muted:       #9B8EC4;
 
-  /* Tipografía */
-  --text-primary:     #E8ECF1;
-  --text-muted:       #8B98AC;
-
-  /* Glow effects */
-  --glow-primary:     0 0 20px rgba(34, 211, 238, 0.25);
-  --glow-primary-sm:  0 0 10px rgba(34, 211, 238, 0.15);
-
-  /* Grid de fondo (tipo placa de circuito) */
-  --grid-size:        40px;
-  --grid-color:       rgba(30, 41, 59, 0.55); /* --border al ~55% de opacidad */
+  --glow-purple:      0 0 30px rgba(168, 85, 247, 0.35);
+  --glow-purple-sm:   0 0 12px rgba(168, 85, 247, 0.2);
+  --glow-fuchsia:     0 0 40px rgba(232, 121, 249, 0.25);
 }
 
 /* ── Reset y base ── */
 @layer base {
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
   }
 
   html {
-    /* Scroll suave entre secciones al hacer clic en los CTAs */
     scroll-behavior: smooth;
   }
 
@@ -50,35 +38,22 @@
     color: var(--text-primary);
     font-family: var(--font-inter), system-ui, sans-serif;
     line-height: 1.7;
-    /* Antialiasing para pantallas de alta densidad */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-
-    /* ── Grid de fondo sutil — tipo placa de circuito ──
-       Dos gradientes perpendiculares de 1px cada uno, con opacidad muy baja.
-       Se repiten cada --grid-size para crear la cuadrícula. */
-    background-image:
-      linear-gradient(var(--grid-color) 1px, transparent 1px),
-      linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
-    background-size: var(--grid-size) var(--grid-size);
-    /* La cuadrícula se "ancla" al body; la página hace scroll sobre ella */
-    background-attachment: fixed;
+    overflow-x: hidden;
   }
 
-  /* Headings en fuente display (Space Grotesk) */
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-space-grotesk), system-ui, sans-serif;
     color: var(--text-primary);
-    line-height: 1.2;
+    line-height: 1.15;
   }
 
-  /* Links sin decoración por defecto; cada componente gestiona el hover */
   a {
     color: inherit;
     text-decoration: none;
   }
 
-  /* Smooth focus ring para accesibilidad de teclado */
   :focus-visible {
     outline: 2px solid var(--accent-primary);
     outline-offset: 3px;
@@ -86,87 +61,178 @@
   }
 }
 
-/* ── Clases de utilidad personalizadas ── */
+/* ── Utilidades personalizadas ── */
 @layer utilities {
-  /* Fuente mono para badges y etiquetas de datos */
   .font-data {
     font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
   }
 
-  /* Efecto de borde que brilla al hover (se aplica en ProjectCard) */
-  .card-hover-glow {
-    transition: border-color 250ms ease, box-shadow 250ms ease;
-  }
-  .card-hover-glow:hover {
-    border-color: var(--accent-primary);
-    box-shadow: var(--glow-primary);
-  }
-
-  /* Texto con gradiente cian para destacar keywords */
-  .text-gradient-cyan {
-    background: linear-gradient(135deg, var(--accent-primary) 0%, #67E8F9 100%);
+  /* Gradiente de texto morado */
+  .text-gradient-purple {
+    background: linear-gradient(135deg, #A855F7 0%, #E879F9 50%, #818CF8 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
-  /* Separador de sección con línea fina en accent-primary */
+  /* Gradiente de texto violeta más sutil */
+  .text-gradient-violet {
+    background: linear-gradient(135deg, #C084FC 0%, #A855F7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Separador de sección con gradiente morado */
   .section-divider {
-    width: 3rem;
+    width: 3.5rem;
     height: 2px;
-    background: linear-gradient(90deg, var(--accent-primary), transparent);
+    background: linear-gradient(90deg, var(--accent-primary), var(--accent-fuchsia), transparent);
     border-radius: 9999px;
   }
-}
 
-/* ── Scrollbar personalizada (Webkit) ── */
-::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-track {
-  background: var(--bg);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border-radius: 9999px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--text-muted);
-}
-
-/* ── Animación de la onda del Hero (oscilloscope) ── */
-@keyframes oscilloscope-draw {
-  0%   { stroke-dashoffset: 1200; }
-  60%  { stroke-dashoffset: 0; }
-  100% { stroke-dashoffset: 0; }
-}
-
-@keyframes oscilloscope-fade {
-  0%, 60% { opacity: 0.18; }
-  80%      { opacity: 0.12; }
-  100%     { opacity: 0.10; }
-}
-
-.oscilloscope-line {
-  stroke-dasharray: 1200;
-  stroke-dashoffset: 1200;
-  animation:
-    oscilloscope-draw 2.5s ease-out 0.3s forwards,
-    oscilloscope-fade 2.5s ease-out 0.3s forwards;
-}
-
-/* ── Animación de entrada (fade-up) para secciones ── */
-@keyframes fade-up {
-  from {
-    opacity: 0;
-    transform: translateY(24px);
+  /* Card con hover glow morado */
+  .card-hover-glow {
+    transition: border-color 280ms ease, box-shadow 280ms ease, transform 280ms ease;
   }
-  to {
+  .card-hover-glow:hover {
+    border-color: var(--accent-primary);
+    box-shadow: var(--glow-purple), inset 0 0 40px rgba(168, 85, 247, 0.04);
+    transform: translateY(-2px);
+  }
+
+  /* Borde con gradiente animado */
+  .border-gradient {
+    position: relative;
+    border: 1px solid transparent;
+    background-clip: padding-box;
+  }
+  .border-gradient::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    background: linear-gradient(135deg, #A855F7, #7C3AED, #E879F9, #818CF8);
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 300ms ease;
+  }
+  .border-gradient:hover::before {
+    opacity: 1;
+  }
+
+  /* Fondo noise/grain sutil */
+  .noise-bg {
+    position: relative;
+  }
+  .noise-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    opacity: 0.4;
+    border-radius: inherit;
+  }
+
+  /* Scroll reveal — estado inicial */
+  .reveal {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+  }
+  .reveal.visible {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-.animate-fade-up {
-  animation: fade-up 0.65s ease-out forwards;
+/* ── Fondo nebular animado ── */
+@keyframes nebula-move {
+  0%   { transform: translate(0, 0) scale(1); }
+  33%  { transform: translate(30px, -20px) scale(1.05); }
+  66%  { transform: translate(-20px, 15px) scale(0.98); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+@keyframes nebula-move-2 {
+  0%   { transform: translate(0, 0) scale(1); }
+  33%  { transform: translate(-25px, 30px) scale(1.08); }
+  66%  { transform: translate(20px, -15px) scale(0.96); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+.nebula-blob-1 {
+  animation: nebula-move 14s ease-in-out infinite;
+}
+.nebula-blob-2 {
+  animation: nebula-move-2 18s ease-in-out infinite;
+}
+.nebula-blob-3 {
+  animation: nebula-move 22s ease-in-out infinite reverse;
+}
+
+/* ── Animaciones de rings SVG ── */
+@keyframes ring-rotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes ring-rotate-reverse {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(-360deg); }
+}
+@keyframes ring-draw {
+  from { stroke-dashoffset: 600; opacity: 0; }
+  to   { stroke-dashoffset: 0;   opacity: 1; }
+}
+@keyframes ring-pulse {
+  0%, 100% { opacity: 0.4; }
+  50%       { opacity: 0.9; }
+}
+
+.ring-spin        { animation: ring-rotate 20s linear infinite; transform-origin: center; }
+.ring-spin-fast   { animation: ring-rotate 12s linear infinite; transform-origin: center; }
+.ring-spin-rev    { animation: ring-rotate-reverse 16s linear infinite; transform-origin: center; }
+.ring-draw        { animation: ring-draw 2s ease-out 0.5s forwards; stroke-dasharray: 600; stroke-dashoffset: 600; opacity: 0; }
+.ring-pulse       { animation: ring-pulse 4s ease-in-out infinite; }
+
+/* ── Partículas ── */
+@keyframes particle-up {
+  0%   { transform: translateY(0) translateX(0) scale(0); opacity: 0; }
+  15%  { opacity: 1; transform: translateY(-10px) translateX(5px) scale(1); }
+  85%  { opacity: 0.6; }
+  100% { transform: translateY(-70px) translateX(-8px) scale(0.5); opacity: 0; }
+}
+
+.particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--accent-primary);
+  animation: particle-up 3s ease-out infinite;
+}
+
+/* ── Animaciones de entrada ── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-in-right {
+  from { opacity: 0; transform: translateX(32px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.animate-fade-up      { animation: fade-up 0.7s ease-out forwards; }
+.animate-fade-in-right { animation: fade-in-right 0.8s ease-out forwards; }
+
+/* ── Scrollbar morada ── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb {
+  background: var(--border-bright);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-primary);
 }

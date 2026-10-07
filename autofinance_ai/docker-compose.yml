@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  # ----------------------------------------------------
+  # 1. BASE DE DATOS SQL (PostgreSQL)
+  # ----------------------------------------------------
+  db:
+    image: postgres:15-alpine
+    container_name: autofinance_db
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: adminpassword
+      POSTGRES_DB: autofinance
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - ai_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d autofinance"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ----------------------------------------------------
+  # 2. AGENT ORCHESTRATOR (Backend Principal - Python/FastAPI)
+  # ----------------------------------------------------
+  agent-orchestrator:
+    build: 
+      context: ./agent-orchestrator
+      dockerfile: Dockerfile
+    container_name: autofinance_orchestrator
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgresql://admin:adminpassword@db:5432/autofinance
+    networks:
+      - ai_network
+    volumes:
+      - ./agent-orchestrator:/app  # Para Hot-Reload en desarrollo
+
+  # ----------------------------------------------------
+  # 3. CHATBOT RAG (IA Generativa - Python)
+  # ----------------------------------------------------
+  chatbot-rag:
+    build: 
+      context: ./chatbot-rag
+      dockerfile: Dockerfile
+    container_name: autofinance_chatbot
+    ports:
+      - "8001:8001"
+    networks:
+      - ai_network
+    volumes:
+      - ./chatbot-rag:/app
+
+  # ----------------------------------------------------
+  # 4. FRONTEND (Next.js - Lo conectaremos rápido y visual)
+  # ----------------------------------------------------
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    container_name: autofinance_web
+    ports:
+      - "3000:3000"
+    depends_on:
+      - agent-orchestrator
+    networks:
+      - ai_network
+    volumes:
+      - ./web:/app
+      - /app/node_modules # Evita sobreescribir modulos de node
+
+volumes:
+  postgres_data:
+
+networks:
+  ai_network:
+    driver: bridge
